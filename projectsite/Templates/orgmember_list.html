@@ -17,15 +17,28 @@
 <br />
         <div class="col-md-12 row">
          <div class="col-md-6">
-          <form class="navbar-left navbar-form nav-search mr-md-3" action="{% url 'orgmember-list' %}">
-           <div class="input-group">
-            <input type="text" placeholder="Search ..." class="form-control" name="q" />
-            <div class="input-group-append">
-            <span class="input-group-text">
-             <i class="la la-search search-icon"></i>
-            </span>
+          <form class="navbar-left navbar-form mr-md-3" action="{% url 'orgmember-list' %}" method="get">
+            <!-- search field -->
+            <div class="input-group mb-2">
+              <input type="text" placeholder="Search ..." class="form-control" name="q" value="{{ request.GET.q }}" />
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="submit">Search</button>
+              </div>
             </div>
-           </div>
+            <!-- sort row -->
+            <div class="form-row align-items-center">
+              <label class="mr-2 mb-0">Sort by</label>
+              <select name="sort_by" class="form-control mr-2" style="max-width:200px;">
+                <option value="">--</option>
+                <option value="student__lastname" {% if request.GET.sort_by == 'student__lastname' %}selected{% endif %}>Last name A‑Z</option>
+                <option value="-student__lastname" {% if request.GET.sort_by == '-student__lastname' %}selected{% endif %}>Last name Z‑A</option>
+                <option value="student__firstname" {% if request.GET.sort_by == 'student__firstname' %}selected{% endif %}>First name A‑Z</option>
+                <option value="-student__firstname" {% if request.GET.sort_by == '-student__firstname' %}selected{% endif %}>First name Z‑A</option>
+                <option value="date_joined" {% if request.GET.sort_by == 'date_joined' %}selected{% endif %}>Date Joined ↑</option>
+                <option value="-date_joined" {% if request.GET.sort_by == '-date_joined' %}selected{% endif %}>Date Joined ↓</option>
+              </select>
+              <button class="btn btn-primary" type="submit">Sort</button>
+            </div>
           </form>
          </div>
          <div class="col-md-6">
@@ -39,9 +52,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Student</th>
-                                    <th scope="col">Organization</th>
-                                    <th scope="col">Date Joined</th>
-                                    <th scope="col">Action</th>
+<th scope="col">Organization</th>
+<th scope="col">Date Joined</th>
+<th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>

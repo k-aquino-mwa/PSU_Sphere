@@ -14,12 +14,14 @@ from django.utils import timezone
 class HomePageView(LoginRequiredMixin,ListView):
     model = Organization
     context_object_name = 'home'
-    template_name = "home.html"
+    template_name = "index.html"
 
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
         context["total_students"] = Student.objects.count()
+        context["total_organizations"] = Organization.objects.count()
+        context["total_programs"] = Program.objects.count()
 
         today = timezone.now().date()
         count = (
@@ -87,6 +89,16 @@ class OrgMemberList(LoginRequiredMixin, ListView):
                 Q(organization__name__icontains=query)
             )
         return qs
+
+    def get_ordering(self):
+        # Accept sort_by (including descending with '-' prefix) for custom ordering
+        allowed = ['student__lastname', '-student__lastname',
+                   'student__firstname', '-student__firstname',
+                   'date_joined', '-date_joined']
+        sort_by = self.request.GET.get('sort_by')
+        if sort_by in allowed:
+            return sort_by
+        return super().get_ordering()
 
 
 class OrgMemberCreateView(LoginRequiredMixin, CreateView):
@@ -199,6 +211,13 @@ class ProgramList(LoginRequiredMixin, ListView):
         if query:
             qs = qs.filter(prog_name__icontains=query)
         return qs
+    
+    def get_ordering(self):
+        allowed = ["prog_name", "college__college_name"]
+        sort_by = self.request.GET.get("sort_by")
+        if sort_by in allowed:
+            return sort_by
+        return "prog_name"
 
 
 class ProgramCreateView(LoginRequiredMixin, CreateView):
