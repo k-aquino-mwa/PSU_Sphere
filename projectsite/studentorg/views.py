@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from studentorg.models import OrgMember, Organization, Student
-from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm
+from studentorg.models import OrgMember, Organization, Student, College
+from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
@@ -147,4 +147,40 @@ class StudentDeleteView(LoginRequiredMixin, DeleteView):
     model = Student
     template_name = 'student_del.html'
     success_url = reverse_lazy('student-list')
+
+
+# ---------- College views ----------
+class CollegeList(LoginRequiredMixin, ListView):
+    model = College
+    context_object_name = 'college'
+    template_name = 'college_list.html'
+    paginate_by = 10
+    ordering = ['college_name']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(college_name__icontains=query)
+        return qs
+
+
+class CollegeCreateView(LoginRequiredMixin, CreateView):
+    model = College
+    form_class = CollegeForm
+    template_name = 'college_form.html'
+    success_url = reverse_lazy('college-list')
+
+
+class CollegeUpdateView(LoginRequiredMixin, UpdateView):
+    model = College
+    form_class = CollegeForm
+    template_name = 'college_form.html'
+    success_url = reverse_lazy('college-list')
+
+
+class CollegeDeleteView(LoginRequiredMixin, DeleteView):
+    model = College
+    template_name = 'college_del.html'
+    success_url = reverse_lazy('college-list')
     
