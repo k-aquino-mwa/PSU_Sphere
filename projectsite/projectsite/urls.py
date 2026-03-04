@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from studentorg.views import (
     HomePageView,
     OrganizationList,
@@ -71,4 +71,7 @@ path('organization_list/<pk>/delete', OrganizationDeleteView.as_view(), name='or
     path('program_list/add', ProgramCreateView.as_view(), name='program-add'),
     path('program_list/<pk>', ProgramUpdateView.as_view(), name='program-update'),
     path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),
+
+    # authentication (django-allauth)
+    path('accounts/', include('allauth.urls')),
 ]
